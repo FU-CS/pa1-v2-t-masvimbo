@@ -27,7 +27,7 @@ public class Vector {
      * @return The number of dimensions.
      */
     public int getDimension() {
-
+        return this.n;
     }
 
     /**
@@ -36,8 +36,12 @@ public class Vector {
      * @return The element at the specified index.
      */
     public int read(int index) {
-
+        if (index < 0 || index >= this.n) {
+            return -1;
+        }
+        return data[index];
     }
+        
 
     /**
      * Set the element at the specified index in the vector to the given value.
@@ -45,16 +49,23 @@ public class Vector {
      * @param value
      */
     public void update(int index, int value) {
-
+        if (index >= 0 && index < this.n) {
+            data[index] = value;
+        }
     }
-
     /**
      * Remove the element at the specified index in the vector.
      * @param index The index of the element to remove.
      */
     public void delete(int index) {
-
+        if (index >= 0 && index < this.n) {
+            for (int i = index; i < n - 1; i++) {
+                data[i] = data[i + 1];
+            }
+            data[n - 1] = -1;  // Reset last element to -1
+        }
     }
+
 
     /**
      * Add the elements of the given vector v to the current vector.
@@ -62,15 +73,22 @@ public class Vector {
      * @param v The vector to add.
      */
     public void add(Vector v) {
-
+        if (v.getDimension() == this.n) {
+            for (int i = 0; i < n; i++) {
+                this.data[i] += v.read(i);
+            }
+        }
     }
-
     /**
      * Subtract the elements of the given vector v from the current vector.
      * @param v
      */
     public void subtract(Vector v) {
-
+        if (v.getDimension() == this.n) {
+            for (int i = 0; i < n; i++) {
+                this.data[i] -= v.read(i);
+            }
+        }
     }
 
     /**
@@ -78,34 +96,59 @@ public class Vector {
      * @return The maximum element.
      */
     public int max() {
-
+        if (n == 0) return -1;
+        
+        int max = data[0];
+        for (int i = 1; i < n; i++) {
+            if (data[i] > max) {
+                max = data[i];
+            }
+        }
+        return max;
     }
-
     /**
      * Get the minimum element in the vector.
      * @return The minimum element.
      */
     public int min() {
+        if (n == 0) return -1;
 
+        int min = data[0];
+        for (int i = 1; i < n; i++) {
+            if (data[i] < min) {
+                min = data[i];
+            }
+        }
+        return min;
     }
+
 
     /**
      * Get the average of all elements in the vector.
      * @return The average of all elements.
      */
     public double average() {
-        
-    }
+        if (n == 0) return -1;
 
+        double sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += data[i];
+        }
+        return sum / n;
+    }
     /**
      * Search for the first occurrence of the specified value in the vector.
      * @param value The value to search for.
      * @return The index of the first occurrence of the value, or -1 if not found.
      */
     public int search(int value) {
-        
+        for (int i = 0; i < n; i++) {
+            if (data[i] == value) {
+                return i;
+            }
+        }
+        return -1;
     }
-
     /**
      * Search for the first occurrence of the specified value in the vector.
      * This method is optimized for speed using the Binary Search Algorithm.
@@ -113,14 +156,36 @@ public class Vector {
      * @return The index of the first occurrence of the value, or -1 if not found.
      */
     public int searchFast(int value) {
-
+        int left = 0;
+        int right = n - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (data[mid] == value) {
+                return mid;
+            } else if (data[mid] < value) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
     }
 
     /**
      * Sort the elements of the vector in ascending order.
      */
     public void sort() {
-
+        for (int i = 0; i < n - 1; i++) {            // Loop over each element except the last one
+            int minIndex = i;                        // Assume the current element is the smallest
+            for (int j = i + 1; j < n; j++) {        // Loop over the remaining elements
+                if (data[j] < data[minIndex]) {      // Update minIndex if a smaller element is found
+                    minIndex = j;
+                }
+            }
+            // Swap the found minimum element with the current element
+            int temp = data[minIndex];
+            data[minIndex] = data[i];
+            data[i] = temp;
+        }
     }
-    
 }
